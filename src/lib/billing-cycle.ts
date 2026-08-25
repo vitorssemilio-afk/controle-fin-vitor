@@ -22,6 +22,11 @@ export function shiftMonths(date: Date, months: number): Date {
   return dateWithDay(date.getUTCFullYear(), date.getUTCMonth() + months, date.getUTCDate());
 }
 
+/** Truncates a date to the first day of its month (UTC). */
+export function monthStart(date: Date): Date {
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
+}
+
 export interface BillingCycle {
   closingDate: Date;
   dueDate: Date;

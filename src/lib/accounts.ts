@@ -46,6 +46,7 @@ export function getAccountForUser(userId: string, accountId: string) {
  */
 export async function computeAccountBalances(
   userId: string,
+  asOf?: Date,
 ): Promise<Map<string, Prisma.Decimal>> {
   const accounts = await prisma.financialAccount.findMany({
     where: { userId },
@@ -56,15 +57,17 @@ export async function computeAccountBalances(
     accounts.map((account) => [account.id, account.initialBalance]),
   );
 
+  const dateFilter = asOf ? { lte: asOf } : undefined;
+
   const movements = await prisma.transaction.groupBy({
     by: ["accountId", "type"],
-    where: { userId },
+    where: { userId, ...(dateFilter ? { date: dateFilter } : {}) },
     _sum: { amount: true },
   });
 
   const transferCredits = await prisma.transaction.groupBy({
     by: ["transferAccountId"],
-    where: { userId, type: "TRANSFER" },
+    where: { userId, type: "TRANSFER", ...(dateFilter ? { date: dateFilter } : {}) },
     _sum: { amount: true },
   });
 
@@ -86,6 +89,20 @@ export async function computeAccountBalances(
   }
 
   return balances;
+}
+
+/**
+ * Total across every account of the user as of a given moment (or right
+ * now) — the "patrimônio" figure. Built on the same never-stored balance
+ * calculation as everything else.
+ */
+export async function computeTotalNetWorth(userId: string, asOf?: Date): Promise<Prisma.Decimal> {
+  const balances = await computeAccountBalances(userId, asOf);
+  let total = new Prisma.Decimal(0);
+  for (const balance of balances.values()) {
+    total = total.plus(balance);
+  }
+  return total;
 }
 
 /**

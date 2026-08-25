@@ -11,6 +11,7 @@ const links = [
   { href: "/recurring", label: "Recorrências" },
   { href: "/budgets", label: "Orçamentos" },
   { href: "/goals", label: "Metas" },
+  { href: "/reports", label: "Relatórios" },
   { href: "/categories", label: "Categorias" },
 ];
 

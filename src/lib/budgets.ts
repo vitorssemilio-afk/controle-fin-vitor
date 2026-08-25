@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@/generated/prisma/client";
-import { shiftMonths } from "@/lib/billing-cycle";
+import { monthStart, shiftMonths } from "@/lib/billing-cycle";
 import { getCategoryForUser } from "@/lib/categories";
 
 export class InvalidBudgetError extends Error {
@@ -8,10 +8,6 @@ export class InvalidBudgetError extends Error {
     super(message);
     this.name = "InvalidBudgetError";
   }
-}
-
-function monthStart(date: Date): Date {
-  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
 }
 
 /**

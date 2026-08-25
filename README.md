@@ -92,7 +92,26 @@ autenticação com **NextAuth** (credenciais, e-mail e senha).
   histórico insuficiente, ritmo negativo, projeção calculada), progresso
   refletindo saques e depósitos reais, e isolamento de metas entre usuários
 
-As fases seguintes (relatórios) ainda não foram implementadas.
+**Fase 6 — Relatórios** ✅
+
+- Visão mensal de receitas versus despesas (as mesmas regras das fases
+  anteriores: despesa soma conta + cartão, nunca conta transferência nem
+  pagamento de fatura)
+- Gastos por categoria comparados com o mês anterior, num gráfico
+  "antes → depois" por categoria (só aparecem categorias com movimento em
+  pelo menos um dos dois meses)
+- Evolução do patrimônio somando todas as contas, últimos 12 meses, com
+  gráfico de linha interativo (passar o mouse mostra o valor exato de cada
+  mês)
+- Exportação em CSV das transações do mês visualizado (conta + compras no
+  cartão), pelo botão "Exportar CSV"
+- Testes automatizados: resumo mensal excluindo transferência/pagamento de
+  fatura, comparação por categoria (incluindo categoria sem movimento em
+  nenhum dos dois meses), um caso de borda de fronteira de mês no cálculo
+  de patrimônio (lançamento no dia 1 não pode vazar para o saldo de fim do
+  mês anterior), e isolamento de relatórios entre usuários
+
+Todas as fases do escopo original estão implementadas.
 
 ## Rodando localmente
 
