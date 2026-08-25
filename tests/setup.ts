@@ -9,7 +9,7 @@ if (!process.env.DATABASE_URL?.includes("controle_fin_test")) {
 }
 
 beforeEach(async () => {
-  await prisma.financialAccount.deleteMany();
+  // Cascades to accounts, categories and transactions.
   await prisma.user.deleteMany();
 });
 

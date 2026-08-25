@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/password";
+import { seedDefaultCategories } from "@/lib/categories";
 
 export class EmailAlreadyInUseError extends Error {
   constructor() {
@@ -18,11 +19,17 @@ export async function registerUser(input: { name: string; email: string; passwor
 
   const passwordHash = await hashPassword(input.password);
 
-  return prisma.user.create({
-    data: {
-      name: input.name,
-      email,
-      passwordHash,
-    },
+  return prisma.$transaction(async (tx) => {
+    const user = await tx.user.create({
+      data: {
+        name: input.name,
+        email,
+        passwordHash,
+      },
+    });
+
+    await seedDefaultCategories(tx, user.id);
+
+    return user;
   });
 }

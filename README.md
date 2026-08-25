@@ -23,7 +23,24 @@ autenticação com **NextAuth** (credenciais, e-mail e senha).
 - Testes automatizados cobrindo isolamento de dados entre usuários e
   hashing de senha
 
-As fases seguintes (transações, cartão de crédito, recorrências/orçamentos,
+**Fase 2 — Transações e categorias** ✅
+
+- CRUD de transações (receita, despesa e transferência entre contas
+  próprias), com data, valor, conta, categoria e descrição
+- Categorias padrão criadas para cada usuário no cadastro (`Moradia`,
+  `Mercado`, `Transporte`, `Saúde`, `Lazer`, `Educação`, `Assinaturas`,
+  `Salário`, `Freelance`, `Investimentos`, `Outros`), editáveis e com
+  criação de novas
+- Transferências não têm categoria e não entram como receita/despesa —
+  apenas movem saldo entre duas contas do mesmo usuário
+- Saldo de cada conta no dashboard agora é calculado de verdade
+  (`initialBalance` + transações), nunca armazenado
+- Filtro de transações por conta, categoria e período
+- Testes automatizados: cálculo de saldo com receita/despesa/transferência,
+  validação de categoria compatível com o tipo da transação, e isolamento
+  de transações e categorias entre usuários
+
+As fases seguintes (cartão de crédito e fatura, recorrências/orçamentos,
 metas, relatórios) ainda não foram implementadas.
 
 ## Rodando localmente
