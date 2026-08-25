@@ -7,6 +7,11 @@ e relatórios.
 Stack: **Next.js (App Router) + TypeScript**, **PostgreSQL** via **Prisma**,
 autenticação com **NextAuth** (credenciais, e-mail e senha).
 
+## Deploy
+
+Hospedado no Vercel, com deploy automático a cada push na `main`:
+https://controle-fin-vitor.vercel.app
+
 ## Status
 
 **Fase 1 — Fundação e autenticação** ✅
