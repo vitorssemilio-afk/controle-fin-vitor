@@ -3,9 +3,11 @@ import { redirect } from "next/navigation";
 import { requireCurrentUserId } from "@/lib/current-user";
 import { computeAccountBalances, listAccountsForUser } from "@/lib/accounts";
 import { formatMoney, ACCOUNT_TYPE_LABELS } from "@/lib/format";
+import { syncRecurringTransactionsForUser } from "@/lib/recurring-transactions";
 
 export default async function DashboardPage() {
   const userId = await requireCurrentUserId();
+  await syncRecurringTransactionsForUser(userId);
   const accounts = await listAccountsForUser(userId);
 
   if (accounts.length === 0) {

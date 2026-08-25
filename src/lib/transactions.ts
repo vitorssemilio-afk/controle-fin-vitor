@@ -16,6 +16,7 @@ export interface TransactionInput {
   accountId: string;
   transferAccountId?: string | null;
   categoryId?: string | null;
+  recurringTransactionId?: string | null;
   type: TransactionType;
   amount: number;
   date: Date;
@@ -97,6 +98,7 @@ export async function createTransactionForUser(
       accountId: input.accountId,
       transferAccountId: input.type === "TRANSFER" ? input.transferAccountId : null,
       categoryId: input.type === "INCOME" || input.type === "EXPENSE" ? input.categoryId : null,
+      recurringTransactionId: input.recurringTransactionId ?? null,
       type: input.type,
       amount: input.amount,
       date: input.date,

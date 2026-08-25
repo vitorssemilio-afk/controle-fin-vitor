@@ -3,6 +3,7 @@ import { requireCurrentUserId } from "@/lib/current-user";
 import { listAccountsForUser } from "@/lib/accounts";
 import { listCategoriesForUser } from "@/lib/categories";
 import { listTransactionsForUser } from "@/lib/transactions";
+import { syncRecurringTransactionsForUser } from "@/lib/recurring-transactions";
 import { formatMoney } from "@/lib/format";
 import { Select } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ export default async function TransactionsPage({
   searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
   const userId = await requireCurrentUserId();
+  await syncRecurringTransactionsForUser(userId);
   const params = await searchParams;
 
   const [accounts, categories, transactions] = await Promise.all([

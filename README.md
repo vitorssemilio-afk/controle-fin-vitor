@@ -59,8 +59,26 @@ autenticação com **NextAuth** (credenciais, e-mail e senha).
   fechamento/pagamento de fatura, e isolamento de cartões e faturas entre
   usuários
 
-As fases seguintes (recorrências/orçamentos, metas, relatórios) ainda não
-foram implementadas.
+**Fase 4 — Recorrências e orçamentos** ✅
+
+- Transações recorrentes (assinaturas, salário, aluguel) com frequência
+  semanal, mensal ou anual e data final opcional
+- Não existe cron nesta stack: cada regra guarda até quando já gerou
+  lançamentos, e toda vez que o dashboard, as transações ou os orçamentos
+  são abertos, o app gera de uma vez todos os ciclos que faltam até hoje —
+  inclusive vários meses acumulados se o usuário ficou um tempo sem entrar
+- Orçamento mensal por categoria de despesa, com barra de progresso e
+  alerta de "orçamento estourado"; o gasto soma tanto as despesas em
+  dinheiro/débito quanto as compras no cartão de crédito daquele mês (o
+  cartão já conta como gasto no momento da compra, não só quando a fatura é
+  paga — ver Fase 3)
+- Testes automatizados: geração de ocorrências (incluindo acúmulo de vários
+  ciclos, respeito à data final, sem duplicar ao rodar de novo), cálculo de
+  gasto por categoria somando conta e cartão, alerta de estouro, e
+  isolamento de recorrências e orçamentos entre usuários
+
+As fases seguintes (metas de poupança, relatórios) ainda não foram
+implementadas.
 
 ## Rodando localmente
 

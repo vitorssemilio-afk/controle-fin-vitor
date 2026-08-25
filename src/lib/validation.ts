@@ -69,6 +69,28 @@ export const payInvoiceSchema = z.object({
   paymentAccountId: z.string().min(1, "Selecione a conta de pagamento"),
 });
 
+export const recurringTransactionSchema = z
+  .object({
+    accountId: z.string().min(1, "Selecione a conta"),
+    categoryId: z.string().min(1, "Selecione a categoria"),
+    type: z.enum(["INCOME", "EXPENSE"]),
+    amount: z.coerce.number().positive("O valor precisa ser maior que zero"),
+    description: z.string().trim().max(280).optional(),
+    frequency: z.enum(["WEEKLY", "MONTHLY", "YEARLY"]),
+    startDate: z.coerce.date(),
+    endDate: z.coerce.date().optional(),
+  })
+  .refine((data) => !data.endDate || data.endDate >= data.startDate, {
+    message: "A data final precisa ser depois da data inicial",
+    path: ["endDate"],
+  });
+
+export const upsertBudgetSchema = z.object({
+  categoryId: z.string().min(1, "Selecione a categoria"),
+  referenceMonth: z.coerce.date(),
+  limitAmount: z.coerce.number().positive("O limite precisa ser maior que zero"),
+});
+
 export const transactionFiltersSchema = z.object({
   accountId: z.string().min(1).optional(),
   categoryId: z.string().min(1).optional(),
