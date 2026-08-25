@@ -7,11 +7,12 @@ import { formatMoney } from "@/lib/format";
 import { Select } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 
-const TYPE_SIGN: Record<string, string> = { INCOME: "+", EXPENSE: "-", TRANSFER: "" };
+const TYPE_SIGN: Record<string, string> = { INCOME: "+", EXPENSE: "-", TRANSFER: "", CARD_PAYMENT: "-" };
 const TYPE_COLOR: Record<string, string> = {
   INCOME: "text-positive",
   EXPENSE: "text-negative",
   TRANSFER: "text-ink-soft",
+  CARD_PAYMENT: "text-ink-soft",
 };
 
 export default async function TransactionsPage({
@@ -89,18 +90,16 @@ export default async function TransactionsPage({
         </p>
       ) : (
         <ul className="mt-6 flex flex-col gap-2">
-          {transactions.map((transaction) => (
-            <li key={transaction.id}>
-              <Link
-                href={`/transactions/${transaction.id}/edit`}
-                className="flex items-center justify-between rounded-md border border-border bg-surface px-4 py-3"
-              >
+          {transactions.map((transaction) => {
+            const label =
+              transaction.type === "TRANSFER"
+                ? `${transaction.account.name} → ${transaction.transferAccount?.name ?? ""}`
+                : transaction.description || transaction.category?.name || "Sem descrição";
+
+            const row = (
+              <div className="flex items-center justify-between rounded-md border border-border bg-surface px-4 py-3">
                 <div className="min-w-0">
-                  <p className="truncate font-medium text-ink">
-                    {transaction.type === "TRANSFER"
-                      ? `${transaction.account.name} → ${transaction.transferAccount?.name ?? ""}`
-                      : (transaction.description || transaction.category?.name || "Sem descrição")}
-                  </p>
+                  <p className="truncate font-medium text-ink">{label}</p>
                   <p className="text-sm text-ink-soft">
                     {new Intl.DateTimeFormat("pt-BR").format(transaction.date)}
                     {transaction.category ? ` · ${transaction.category.name}` : ""}
@@ -111,9 +110,19 @@ export default async function TransactionsPage({
                   {TYPE_SIGN[transaction.type]}
                   {formatMoney(transaction.amount.toString(), transaction.account.currency)}
                 </p>
-              </Link>
-            </li>
-          ))}
+              </div>
+            );
+
+            return (
+              <li key={transaction.id}>
+                {transaction.type === "CARD_PAYMENT" ? (
+                  row
+                ) : (
+                  <Link href={`/transactions/${transaction.id}/edit`}>{row}</Link>
+                )}
+              </li>
+            );
+          })}
         </ul>
       )}
     </main>

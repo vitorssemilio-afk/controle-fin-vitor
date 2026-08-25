@@ -40,8 +40,27 @@ autenticação com **NextAuth** (credenciais, e-mail e senha).
   validação de categoria compatível com o tipo da transação, e isolamento
   de transações e categorias entre usuários
 
-As fases seguintes (cartão de crédito e fatura, recorrências/orçamentos,
-metas, relatórios) ainda não foram implementadas.
+**Fase 3 — Cartão de crédito e faturas** ✅
+
+- Cadastro de cartão com dia de fechamento e dia de vencimento
+- Lançamento de compra no cartão: cai automaticamente na fatura certa a
+  partir da data de fechamento (compra até o dia de fechamento cai na
+  fatura deste mês, depois disso cai na do mês seguinte)
+- Parcelamento: divide o valor em centavos entre as faturas seguintes sem
+  perder nem inventar centavo (sobra vai para as primeiras parcelas)
+- Fechamento manual de fatura e pagamento, debitando a conta escolhida
+- Compra no cartão não afeta o saldo da conta na hora — só quando a fatura
+  é paga, para o parcelamento fazer sentido e o saldo não cair antes da
+  hora. O pagamento gera uma transação de um tipo novo (`CARD_PAYMENT`)
+  que debita a conta mas não entra como despesa por categoria, para não
+  contar o mesmo gasto duas vezes nos relatórios
+- Testes automatizados: cálculo de qual fatura uma compra cai (incluindo
+  virada de mês/ano e meses mais curtos), divisão exata do parcelamento,
+  fechamento/pagamento de fatura, e isolamento de cartões e faturas entre
+  usuários
+
+As fases seguintes (recorrências/orçamentos, metas, relatórios) ainda não
+foram implementadas.
 
 ## Rodando localmente
 

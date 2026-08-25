@@ -20,7 +20,7 @@ export default async function EditTransactionPage({
     listCategoriesForUser(userId),
   ]);
 
-  if (!transaction) {
+  if (!transaction || transaction.type === "CARD_PAYMENT") {
     notFound();
   }
 
@@ -40,7 +40,7 @@ export default async function EditTransactionPage({
       <div className="mt-6">
         <EditTransactionForm
           transactionId={transaction.id}
-          accounts={accounts}
+          accounts={accounts.map((account) => ({ id: account.id, name: account.name }))}
           categories={categories}
           initialValues={initialValues}
         />

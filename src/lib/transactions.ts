@@ -1,7 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { getAccountForUser } from "@/lib/accounts";
 import { getCategoryForUser } from "@/lib/categories";
-import type { TransactionType } from "@/generated/prisma/client";
+import type { Prisma, TransactionType } from "@/generated/prisma/client";
+
+type DbClient = typeof prisma | Prisma.TransactionClient;
 
 export class InvalidTransactionError extends Error {
   constructor(message: string) {
@@ -24,6 +26,8 @@ export interface TransactionInput {
  * Enforces the invariants that keep the ledger meaningful:
  * - INCOME/EXPENSE always have a category whose kind matches the transaction type.
  * - TRANSFER never has a category, always has a distinct destination account.
+ * - CARD_PAYMENT never has a category or a destination account — it's created
+ *   only by paying an invoice (see src/lib/invoices.ts), never by the user directly.
  * Every id referenced (account, transfer account, category) must belong to
  * the same user — this is what makes it safe to trust the input.
  */
@@ -54,6 +58,13 @@ async function assertValidTransaction(userId: string, input: TransactionInput) {
     return;
   }
 
+  if (input.type === "CARD_PAYMENT") {
+    if (input.transferAccountId || input.categoryId) {
+      throw new InvalidTransactionError("Pagamento de fatura não tem categoria nem conta de destino");
+    }
+    return;
+  }
+
   if (input.transferAccountId) {
     throw new InvalidTransactionError("Apenas transferências têm conta de destino");
   }
@@ -73,15 +84,19 @@ async function assertValidTransaction(userId: string, input: TransactionInput) {
   }
 }
 
-export async function createTransactionForUser(userId: string, input: TransactionInput) {
+export async function createTransactionForUser(
+  userId: string,
+  input: TransactionInput,
+  client: DbClient = prisma,
+) {
   await assertValidTransaction(userId, input);
 
-  return prisma.transaction.create({
+  return client.transaction.create({
     data: {
       userId,
       accountId: input.accountId,
       transferAccountId: input.type === "TRANSFER" ? input.transferAccountId : null,
-      categoryId: input.type === "TRANSFER" ? null : input.categoryId,
+      categoryId: input.type === "INCOME" || input.type === "EXPENSE" ? input.categoryId : null,
       type: input.type,
       amount: input.amount,
       date: input.date,
@@ -100,6 +115,9 @@ export async function updateTransactionForUser(
   });
   if (!existing) {
     return null;
+  }
+  if (existing.type === "CARD_PAYMENT") {
+    throw new InvalidTransactionError("Pagamento de fatura não pode ser editado aqui");
   }
 
   await assertValidTransaction(userId, input);
@@ -120,7 +138,7 @@ export async function updateTransactionForUser(
 
 export async function deleteTransactionForUser(userId: string, transactionId: string) {
   const { count } = await prisma.transaction.deleteMany({
-    where: { id: transactionId, userId },
+    where: { id: transactionId, userId, type: { not: "CARD_PAYMENT" } },
   });
   return count > 0;
 }

@@ -71,7 +71,10 @@ export async function computeAccountBalances(
   for (const movement of movements) {
     const sum = movement._sum.amount ?? new Prisma.Decimal(0);
     const current = balances.get(movement.accountId) ?? new Prisma.Decimal(0);
-    const signed = movement.type === "EXPENSE" || movement.type === "TRANSFER" ? sum.negated() : sum;
+    const signed =
+      movement.type === "EXPENSE" || movement.type === "TRANSFER" || movement.type === "CARD_PAYMENT"
+        ? sum.negated()
+        : sum;
     balances.set(movement.accountId, current.plus(signed));
   }
 

@@ -7,6 +7,7 @@ import { signOut } from "next-auth/react";
 const links = [
   { href: "/dashboard", label: "Contas" },
   { href: "/transactions", label: "Transações" },
+  { href: "/cards", label: "Cartões" },
   { href: "/categories", label: "Categorias" },
 ];
 
@@ -15,8 +16,8 @@ export function Nav() {
 
   return (
     <nav className="border-b border-border bg-surface">
-      <div className="mx-auto flex max-w-md items-center justify-between px-6 py-3">
-        <div className="flex gap-4">
+      <div className="mx-auto flex max-w-md items-center justify-between gap-2 px-4 py-3">
+        <div className="flex flex-wrap gap-x-3 gap-y-1">
           {links.map((link) => {
             const isActive = pathname.startsWith(link.href);
             return (
@@ -32,7 +33,7 @@ export function Nav() {
         </div>
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
-          className="text-sm text-ink-soft hover:text-ink"
+          className="shrink-0 text-sm text-ink-soft hover:text-ink"
         >
           Sair
         </button>

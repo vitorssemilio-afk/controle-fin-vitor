@@ -51,6 +51,24 @@ export const transactionSchema = z
     path: ["categoryId"],
   });
 
+export const createCreditCardSchema = z.object({
+  name: z.string().trim().min(1, "Dê um nome para o cartão").max(60),
+  closingDay: z.coerce.number().int().min(1).max(31),
+  dueDay: z.coerce.number().int().min(1).max(31),
+});
+
+export const cardPurchaseSchema = z.object({
+  categoryId: z.string().min(1, "Selecione a categoria"),
+  amount: z.coerce.number().positive("O valor precisa ser maior que zero"),
+  purchaseDate: z.coerce.date(),
+  description: z.string().trim().max(280).optional(),
+  installments: z.coerce.number().int().min(1).max(48).default(1),
+});
+
+export const payInvoiceSchema = z.object({
+  paymentAccountId: z.string().min(1, "Selecione a conta de pagamento"),
+});
+
 export const transactionFiltersSchema = z.object({
   accountId: z.string().min(1).optional(),
   categoryId: z.string().min(1).optional(),
