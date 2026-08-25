@@ -10,6 +10,7 @@ const links = [
   { href: "/cards", label: "Cartões" },
   { href: "/recurring", label: "Recorrências" },
   { href: "/budgets", label: "Orçamentos" },
+  { href: "/goals", label: "Metas" },
   { href: "/categories", label: "Categorias" },
 ];
 

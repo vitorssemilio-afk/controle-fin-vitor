@@ -87,3 +87,39 @@ export async function computeAccountBalances(
 
   return balances;
 }
+
+/**
+ * Net signed change in a single account's balance since a given date —
+ * the same sign rules as computeAccountBalances, just scoped to one
+ * account and a time window. Used to measure "how fast is this account
+ * actually growing" for savings goal projections.
+ */
+export async function computeAccountNetChangeSince(
+  userId: string,
+  accountId: string,
+  since: Date,
+): Promise<Prisma.Decimal> {
+  const outgoing = await prisma.transaction.groupBy({
+    by: ["type"],
+    where: { userId, accountId, date: { gte: since } },
+    _sum: { amount: true },
+  });
+
+  let net = new Prisma.Decimal(0);
+  for (const row of outgoing) {
+    const sum = row._sum.amount ?? new Prisma.Decimal(0);
+    const signed =
+      row.type === "EXPENSE" || row.type === "TRANSFER" || row.type === "CARD_PAYMENT"
+        ? sum.negated()
+        : sum;
+    net = net.plus(signed);
+  }
+
+  const incoming = await prisma.transaction.aggregate({
+    where: { userId, transferAccountId: accountId, type: "TRANSFER", date: { gte: since } },
+    _sum: { amount: true },
+  });
+  net = net.plus(incoming._sum.amount ?? new Prisma.Decimal(0));
+
+  return net;
+}

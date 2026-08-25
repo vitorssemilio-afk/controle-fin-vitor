@@ -77,8 +77,22 @@ autenticação com **NextAuth** (credenciais, e-mail e senha).
   gasto por categoria somando conta e cartão, alerta de estouro, e
   isolamento de recorrências e orçamentos entre usuários
 
-As fases seguintes (metas de poupança, relatórios) ainda não foram
-implementadas.
+**Fase 5 — Metas de poupança** ✅
+
+- Criação de metas com valor alvo e prazo, com vínculo opcional a uma conta
+  do tipo poupança
+- Progresso da meta é sempre o saldo real da conta vinculada (a mesma conta
+  de saldo calculado desde a Fase 1) — um saque reduz o progresso, não só
+  os depósitos aumentam
+- Projeção de quando a meta será atingida no ritmo médio desde que a meta
+  foi criada; quando não há dado suficiente para uma projeção honesta (sem
+  conta vinculada, menos de 30 dias de histórico, ou saldo não está
+  crescendo) o app mostra isso explicitamente em vez de uma data inventada
+- Testes automatizados: cada caso da projeção (sem conta, meta atingida,
+  histórico insuficiente, ritmo negativo, projeção calculada), progresso
+  refletindo saques e depósitos reais, e isolamento de metas entre usuários
+
+As fases seguintes (relatórios) ainda não foram implementadas.
 
 ## Rodando localmente
 

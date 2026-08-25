@@ -16,6 +16,7 @@ export const config = {
     "/invoices/:path*",
     "/recurring/:path*",
     "/budgets/:path*",
+    "/goals/:path*",
     "/api/accounts/:path*",
     "/api/transactions/:path*",
     "/api/categories/:path*",
@@ -23,5 +24,6 @@ export const config = {
     "/api/invoices/:path*",
     "/api/recurring-transactions/:path*",
     "/api/budgets/:path*",
+    "/api/savings-goals/:path*",
   ],
 };

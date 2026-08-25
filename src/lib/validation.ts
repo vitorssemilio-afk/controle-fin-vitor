@@ -91,6 +91,13 @@ export const upsertBudgetSchema = z.object({
   limitAmount: z.coerce.number().positive("O limite precisa ser maior que zero"),
 });
 
+export const createSavingsGoalSchema = z.object({
+  name: z.string().trim().min(1, "Dê um nome para a meta").max(80),
+  targetAmount: z.coerce.number().positive("O valor alvo precisa ser maior que zero"),
+  targetDate: z.coerce.date(),
+  linkedAccountId: z.string().min(1).optional(),
+});
+
 export const transactionFiltersSchema = z.object({
   accountId: z.string().min(1).optional(),
   categoryId: z.string().min(1).optional(),
