@@ -48,6 +48,10 @@ export const authOptions: NextAuthOptions = {
           GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            // Google verifies email ownership itself, so it's safe to link
+            // a Google sign-in to an existing e-mail/password account with
+            // the same address instead of NextAuth's default refusal.
+            allowDangerousEmailAccountLinking: true,
           }),
         ]
       : []),
