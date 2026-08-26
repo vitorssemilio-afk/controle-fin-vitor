@@ -18,7 +18,10 @@ https://controle-fin-vitor.vercel.app
 
 - Scaffold Next.js + TypeScript + Tailwind
 - Prisma + PostgreSQL configurados (Docker Compose)
-- Autenticação por e-mail/senha (NextAuth, sessão via JWT)
+- Autenticação por e-mail/senha (NextAuth, sessão via JWT), com login/cadastro
+  via Google como opção adicional (`@next-auth/prisma-adapter`; configure
+  `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` para habilitar — sem eles, o
+  botão "Continuar com Google" simplesmente não é usado)
 - Modelo inicial: `User` e `FinancialAccount` (conta corrente, poupança,
   carteira, investimento), com moeda por conta
 - Toda leitura/escrita de conta passa por funções que recebem o id do

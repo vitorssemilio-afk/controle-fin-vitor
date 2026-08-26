@@ -13,6 +13,12 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
+
+  async function handleGoogle() {
+    setIsGoogleSubmitting(true);
+    await signIn("google", { callbackUrl: "/" });
+  }
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -72,6 +78,22 @@ export default function LoginPage() {
           {isSubmitting ? "Entrando..." : "Entrar"}
         </Button>
       </form>
+
+      <div className="mt-6 flex items-center gap-3 text-xs text-ink-soft">
+        <span className="h-px flex-1 bg-border" />
+        ou
+        <span className="h-px flex-1 bg-border" />
+      </div>
+
+      <Button
+        type="button"
+        variant="ghost"
+        disabled={isGoogleSubmitting}
+        onClick={handleGoogle}
+        className="mt-4"
+      >
+        {isGoogleSubmitting ? "Redirecionando..." : "Continuar com Google"}
+      </Button>
 
       <p className="mt-6 text-center text-sm text-ink-soft">
         Ainda não tem conta?{" "}

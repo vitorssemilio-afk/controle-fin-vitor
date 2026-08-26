@@ -11,8 +11,10 @@ describe("registro de usuário", () => {
     });
 
     expect(user.passwordHash).not.toBe("senha1234");
-    expect(await verifyPassword("senha1234", user.passwordHash)).toBe(true);
-    expect(await verifyPassword("senha-errada", user.passwordHash)).toBe(false);
+    expect(user.passwordHash).not.toBeNull();
+    const passwordHash = user.passwordHash!;
+    expect(await verifyPassword("senha1234", passwordHash)).toBe(true);
+    expect(await verifyPassword("senha-errada", passwordHash)).toBe(false);
   });
 
   it("normaliza o e-mail para minúsculas", async () => {

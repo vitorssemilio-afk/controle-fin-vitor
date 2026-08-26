@@ -14,7 +14,8 @@ model User {
   id           String   @id @default(cuid())
   name         String
   email        String   @unique
-  passwordHash String
+  // Null for users who only ever signed in via an OAuth provider (Google).
+  passwordHash String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -27,8 +28,35 @@ model User {
   recurringTransactions RecurringTransaction[]
   budgets               Budget[]
   savingsGoals          SavingsGoal[]
+  oauthAccounts         Account[]
 
   @@map("users")
+}
+
+// NextAuth's standard Account model — the Prisma model must be named
+// exactly `Account` because @next-auth/prisma-adapter calls `prisma.account`
+// directly (no custom mapping support in next-auth v4). Distinct from our
+// own FinancialAccount. Only used for OAuth sign-in (Google) — we keep JWT
+// sessions, so no Session/VerificationToken tables are needed.
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("accounts")
 }
 
 enum AccountType {
